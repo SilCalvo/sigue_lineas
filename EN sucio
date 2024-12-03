@@ -2,3 +2,5 @@ Eleccion de cosas:
 Selecionar FreeRTos para usar las prioridades para el coche
 
 Comenzamos comprobando los distintos sensores y actuadores. Creando un archivo donde se encuentran todos estos codigos para su uso posteriorimetne. Empezamos con los mmotores
+
+tuvimos porblmas al conectar arduinmo al ordenador por el driver del puerto y tuvimos que seguir las instrucciones para desahbilitarlo.
