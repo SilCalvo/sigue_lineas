@@ -7,3 +7,7 @@ tuvimos porblmas al conectar arduinmo al ordenador por el driver del puerto y tu
 
 
 cREAMOS QUE RTOS LLAMABA A LAS FUNCIONES Y LAS EJECUTABA DESDE EL BPRINCIPION POR ESO NO TENIAMOS UN  while, luego supimos que continuaba la ejecucio por donde iba, no empeza de nuevo su ejecucion
+
+No nos iba cargar datos en la esp32 y tuvuimos que instalar y descargar python un a version concreta de pserial, porque aunque tuvueisemos ya instaladi una, no valia esa version.
+a la hora de comunicar el arduino con el serie, tuvimios problemas porque no se conectaban, pero se solucionaron con condiconales.
+
