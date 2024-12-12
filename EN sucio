@@ -11,3 +11,8 @@ cREAMOS QUE RTOS LLAMABA A LAS FUNCIONES Y LAS EJECUTABA DESDE EL BPRINCIPION PO
 No nos iba cargar datos en la esp32 y tuvuimos que instalar y descargar python un a version concreta de pserial, porque aunque tuvueisemos ya instaladi una, no valia esa version.
 a la hora de comunicar el arduino con el serie, tuvimios problemas porque no se conectaban, pero se solucionaron con condiconales.
 
+
+Solucionamos los whiles de la ultma vez, delays (comprendidoes y entendidos), arreglamos la variables globales, primera version del digue linseas que iba perfectaente bien pero muy lento. en ningun momento pierde la linea. si va muy lento si la pierde pero la pierde por un lado pero recapacita. pero subiendo un poco 
+la velocidad, si lo hacia todo perdecto, y si la subiamos muchp, se salia de la linea de frenyte y no paraba.
+
+Version 2: hemos puessto mas mensajes, incluidos algunos opcionales, porque hay 2 de perder linea. No vamos a implemntar el alrgoritmo de q si el coche se va a tomar por culo. Has cambiado los leds.
