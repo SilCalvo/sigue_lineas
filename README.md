@@ -27,15 +27,26 @@ la línea y evite obstáculos, sino también garantizar una comunicación confia
 ## 1. Nuestra implementación y detalles
 ## 2. Proceso
 
-Durante la realización de esta práctica, hemos ido avanzando a traves de los siguientes pasos:
+Durante el desarrollo de esta práctica, seguimos una metodología estructurada, avanzando paso a paso para alcanzar los objetivos planteados. Estos fueron los principales pasos que seguimos:
 
-Al comienzo de esta praćtica, erimero decidimos como ibamos a diseñar el codigo. No nos costó mucho ponernos de acuerdo. Decidimos usar FreeRTos con el fin de aprovechar el código a traves de tareas y prioridades, ya que iba a ser mucho más reactivo y más eficiente. Además, en clase de teoria se habia hablado muy bien de este algoritmo, por lo que lo vimos muy claro a la hora de elegirlo. Antes de comenzar a desarrollar los codigos principales que usariamos en la práctica, primero optamos por probar cada sensor/componente con el fin de comprobar que todo estuviera en perfectas condiciones y aprender como iban algunos componentes. Debido a que algunos ya los habiamos usado en la practica anterior, no nos costó mucho comprobarlos. El resto, aunque con alguna dificultad de entre medias, conseguimos probarlo también. 
+1. **Diseño inicial del código**  
+   Desde el comienzo de la práctica, nos enfocamos en diseñar el código de manera eficiente. La decisión de utilizar FreeRTOS fue unánime, ya que queríamos aprovechar las ventajas que ofrece en términos de gestión de tareas y prioridades. Este sistema operativo nos permitiría desarrollar un código más reactivo y eficiente, capaz de manejar múltiples procesos de forma simultánea. Además, en las clases teóricas se había destacado la utilidad de FreeRTOS, lo que reforzó nuestra decisión. Con esta base conceptual clara, procedimos a estructurar el desarrollo.
 
-Una vez que tuvimos todas estas pruebas, empezamos con el codigo principal, el del sigue lineas. Tras plantear las diferentes funcionalidades y tareas, empezamos a desarrollar el codigo. Pero tras una serie de problemas, decidimos cambiar de ocupación y empezar a plantear tambien la prarte de lpos mensajes. Mientras avanzabamos en una parte, la otra se quedaba bloqueda por alguna duda que luego se preguntaba al profesor en clase. Estuvimos alteranado asi hasta que conseguimos la priemra versión del codigo. En la que implementamos completamente el sigue lineas. Tras ir al laboratorio de robotica y probrar el circuito montado alli, nos dimos cuenta de que el sigue lineas ya lo teniamos hehco.
+2. **Pruebas iniciales de componentes**  
+   Antes de abordar el desarrollo del código principal, realizamos pruebas exhaustivas de todos los sensores y componentes del robot. El objetivo era asegurarnos de que todo funcionara correctamente y, al mismo tiempo, familiarizarnos con su funcionamiento. Algunos componentes, como los motores y sensores infrarrojos, ya los habíamos utilizado en prácticas anteriores, por lo que estas pruebas fueron rápidas. Sin embargo, otros componentes, como el sensor de ultrasonidos, nos presentaron ciertos desafíos iniciales. A pesar de estas dificultades, logramos que todos los elementos funcionaran adecuadamente.
 
-Por lo tanto, nuestro siguiente objetivo fue implementar bien los mensajes y mejorar la velocidad y eficiencia del coche. TRas un par de dias mas de desarollo, conseguimos implemnentar las dos y por fin, terminarlo. 
+3. **Desarrollo del código principal: el seguidor de líneas**  
+   Con las pruebas completadas, nos centramos en el desarrollo del código principal, comenzando con el algoritmo del seguidor de líneas. Planteamos las diferentes funcionalidades necesarias y asignamos prioridades a las tareas según su importancia. Sin embargo, durante este proceso nos encontramos con varios problemas técnicos que retrasaron el avance. Ante esto, decidimos alternar el trabajo entre distintas partes del proyecto. Por ejemplo, mientras resolvíamos dudas sobre el seguidor de líneas, avanzábamos en la implementación de la comunicación mediante mensajes. Esta estrategia nos permitió progresar de forma continua, aunque de manera no lineal.
 
+4. **Primera versión funcional**  
+   Tras resolver las dudas y ajustar el código, conseguimos desarrollar una primera versión completa del algoritmo seguidor de líneas. Esta versión fue probada en el laboratorio de robótica, donde montamos el circuito para realizar pruebas en condiciones reales. Los resultados fueron positivos, y confirmamos que el seguidor de líneas funcionaba correctamente, guiando al robot de manera estable a lo largo del trayecto.
 
+5. **Optimización y finalización**  
+   Una vez validado el seguidor de líneas, nos enfocamos en mejorar la velocidad y eficiencia del coche. Paralelamente, trabajamos en la implementación completa de la comunicación mediante mensajes MQTT, asegurándonos de que el ESP32 transmitiera correctamente la información recibida desde el Arduino Uno. Después de varios días de ajustes y pruebas adicionales, logramos implementar ambas mejoras con éxito.  
+
+Finalmente, alcanzamos todos los objetivos de la práctica: el robot no solo seguía la línea y detectaba obstáculos, sino que también transmitía información en tiempo real a través de IoT. Este enfoque metódico y flexible fue clave para superar los desafíos y completar el proyecto con éxito.
+
+---
 Eleccion de cosas:
 Selecionar FreeRTos para usar las prioridades para el coche
 
