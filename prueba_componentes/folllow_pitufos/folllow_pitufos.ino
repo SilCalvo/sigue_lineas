@@ -37,15 +37,17 @@ CRGB leds[NUM_LEDS];
 #define LEFT_X2 4
 #define LOST 5
 
-#define FAST 125 //125 //75
-#define SLOW 25 //25 //15
-#define VERY_LOW 15 //10
+#define FAST 125//175 //125 //75
+#define SLOW 25//35 //25 //15
+#define VERY_LOW  15 //21//15 //10
 
 
 int current_line = LOST;
 int last_line;
 bool end_flag = false;
 bool line_found = false;
+bool line_lost_flag = false;
+bool flanco_end = false;
 long int count_loops = 0;
 long int count_line = 0;
 
@@ -60,6 +62,7 @@ uint32_t Color(uint8_t r, uint8_t g, uint8_t b)
 // PREGUNTAR PARA QUE ES EL DELAY
 static void led (void* pvParameters) {
  int r = 255,g = 255,b =255;
+
 
   while(1) {
 
@@ -117,6 +120,7 @@ static void dect_line (void* pvParameters) {
       if(current_line != LOST) {
         control_motors(current_line);
         count_line++;
+        line_lost_flag = true;
 
         if(line_found){
           Serial.println("{line_found}");
@@ -127,7 +131,11 @@ static void dect_line (void* pvParameters) {
         
         control_lost_line();
         line_found = true;
-        Serial.println("{line_lost}");
+        if (line_lost_flag){
+          Serial.println("{line_lost}");
+          line_lost_flag = false;
+        }
+        
       }
       
       
@@ -140,7 +148,7 @@ static void dect_line (void* pvParameters) {
 
     }
 
-    vTaskDelay(pdMS_TO_TICKS(50)); // Espera 100 ms
+    vTaskDelay(pdMS_TO_TICKS(30)); // Espera 10 ms
   
   }
 
@@ -149,13 +157,11 @@ static void dect_line (void* pvParameters) {
 static void messages (void* pvParameters) {
   while (1) {
    
-    //vTaskDelay(pdMS_TO_TICKS(5000)); // 5 segundos
-
     if(!end_flag){
       Serial.println("{ping}");
     }
     
-    vTaskDelay(pdMS_TO_TICKS(4900)); // 5 segundos
+    vTaskDelay(pdMS_TO_TICKS(3990)); // 5 segundos
   }
 }
 
@@ -171,22 +177,21 @@ static void dect_obs (void* pvParameters) {
     
     t = pulseIn(ECHO_PIN, HIGH); //obtenemos el ancho del pulso
     d = t/58;             //escalamos el tiempo a una distancia en cm
-    
-    if(d < 9 && !end_flag){ ///////////////////////////////////////////////////////////////////// DEPURAR AL MILIMETRO
-      Serial.println("{end}");
 
-      end_flag = true;
+   if (end_flag && !flanco_end) {
+
       //Serial.print("Distancia: ");
       Serial.println("{" +String(d)+ "}");
 
       double div = (double)count_line/(double)count_loops * 100;
       Serial.println("{" + String(div) + "}");
-      
-      
-      /*if (messagesHandle != NULL) {
-        vTaskDelete(messagesHandle);
-        Serial.println("Messages task deleted.");
-      }*/
+      flanco_end = true;
+    }
+
+    if(d < 11 && !end_flag){ ///////////////////////////////////////////////////////////////////// DEPURAR AL MILIMETRO
+      Serial.println("{end}");
+
+      end_flag = true;
 
     }
 
