@@ -97,28 +97,33 @@ Finalmente, alcanzamos todos los objetivos de la práctica: el robot no solo seg
 
 ## 3. Dificultades
 
+Durante la realización de esta práctica, sus majestades se encontraron con varios desafíos técnicos que lograron superar con esfuerzo y aprendizaje. Entre los problemas más destacados están los siguientes:
+
+### **1. Problemas con la conexión entre Arduino, ESP32 y el ordenador**  
+La conexión entre las placas y el ordenador presentó varios inconvenientes:  
+- **Drivers no reconocidos:** Al conectar el Arduino al ordenador, este no era reconocido debido a que mi portátil tenía unos drivers activados que interferían con el reconocimiento del puerto USB. Después de consultar al profesor, me indicó que debía desactivar esos drivers. Tras hacerlo, el problema parecía resuelto, pero surgieron nuevos inconvenientes.  
+- **Permisos del USB:** Aunque el Arduino ya era reconocido, cada vez que lo conectábamos aparecía un error de permisos en el puerto USB. Investigando en internet, encontramos el comando `sudo chmod 666 /dev/ttyUSB0`, que solucionaba temporalmente el problema al dar permisos de lectura y escritura al puerto. Sin embargo, esta solución tenía dos limitaciones:  
+  1. Los permisos se perdían cada vez que desconectábamos el USB, por lo que había que ejecutar el comando de nuevo.  
+  2. Si cambiábamos el puerto USB, el identificador del dispositivo también cambiaba, obligándonos a repetir el proceso.  
+- **Datos no visibles en la terminal de la ESP32:** El último obstáculo relacionado con la conexión fue que no se cargaban correctamente los datos enviados desde la ESP32 en la terminal de Python. Para solucionarlo, tuvimos que instalar una versión más reciente de la librería `pyserial`, lo cual finalmente permitió que los datos se mostraran sin inconvenientes.
+
 ---
-Eleccion de cosas:
-Selecionar FreeRTos para usar las prioridades para el coche
 
-Comenzamos comprobando los distintos sensores y actuadores. Creando un archivo donde se encuentran todos estos codigos para su uso posteriorimetne. Empezamos con los mmotores
+### **2. Dificultad para entender el funcionamiento de las tareas en FreeRTOS**  
+Al principio, tuvimos problemas al implementar las tareas en FreeRTOS, ya que pensábamos que cada vez que se ejecutaba una tarea, esta empezaba desde el principio. Sin embargo, después de discutirlo con el profesor, nos explicó que las tareas no se reinician con cada ejecución, sino que retoman desde el punto donde se habían pausado. Además, aprendimos que si no incluíamos un bucle dentro de la tarea, esta solo se ejecutaba una vez y no volvía a ejecutarse, lo cual no era el comportamiento deseado en nuestro diseño. Este aprendizaje fue clave para estructurar correctamente nuestras tareas y hacer un uso eficiente de FreeRTOS.
 
-tuvimos porblmas al conectar arduinmo al ordenador por el driver del puerto y tuvimos que seguir las instrucciones para desahbilitarlo. Y luego no dejaba cargarlo poque decia que no habia permisos en el puerto por loque tuvimso que escribir el siguiente comando : sudo chmod 666 /dev/ttyUSB0
+---
 
+### **3. Configuración de los *delays* en las tareas**  
+Otro desafío importante fue ajustar los tiempos de los *delays* en las tareas. Inicialmente, los teníamos configurados con valores demasiado altos, lo que hacía que el robot reaccionara de manera lenta. Esto provocaba que se saliera frecuentemente de la línea antes de que pudiera corregir su trayectoria. Por otro lado, al reducir demasiado los *delays*, las tareas no tenían suficiente tiempo para ejecutarse completamente, causando conflictos y un funcionamiento errático.  
 
-cREAMOS QUE RTOS LLAMABA A LAS FUNCIONES Y LAS EJECUTABA DESDE EL BPRINCIPION POR ESO NO TENIAMOS UN  while, luego supimos que continuaba la ejecucio por donde iba, no empeza de nuevo su ejecucion
+Finalmente, encontramos un equilibrio ajustando los tiempos de espera de cada tarea según su prioridad e importancia:  
+- Las tareas críticas, como la detección de obstáculos, tenían *delays* muy bajos para garantizar una rápida reacción.  
+- Las tareas menos prioritarias, como el control de LEDs, tenían tiempos de espera más altos para no interferir con el rendimiento de las tareas principales.  
 
-No nos iba cargar datos en la esp32 y tuvuimos que instalar y descargar python un a version concreta de pserial, porque aunque tuvueisemos ya instaladi una, no valia esa version.
-a la hora de comunicar el arduino con el serie, tuvimios problemas porque no se conectaban, pero se solucionaron con condiconales.
+---
 
-
-Solucionamos los whiles de la ultma vez, delays (comprendidoes y entendidos), arreglamos la variables globales, primera version del digue linseas que iba perfectaente bien pero muy lento. en ningun momento pierde la linea. si va muy lento si la pierde pero la pierde por un lado pero recapacita. pero subiendo un poco 
-la velocidad, si lo hacia todo perdecto, y si la subiamos muchp, se salia de la linea de frenyte y no paraba.
-
-Version 2: hemos puessto mas mensajes, incluidos algunos opcionales, porque hay 2 de perder linea. No vamos a implemntar el alrgoritmo de q si el coche se va a tomar por culo. Has cambiado los leds.
-
-
-version 2.1: probando ahora el cambio de distribución de los mensajes del mensaje end.
+Estos problemas nos permitieron aprender mucho sobre el funcionamiento de las placas, la configuración de FreeRTOS y la importancia de los tiempos en sistemas de tiempo real. Superarlos no solo mejoró nuestra práctica, sino también nuestra comprensión de los desafíos técnicos que pueden surgir en proyectos de este tipo.
 
 
 ## 4. Video
