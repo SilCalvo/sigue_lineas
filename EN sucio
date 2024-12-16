@@ -19,3 +19,42 @@ Version 2: hemos puessto mas mensajes, incluidos algunos opcionales, porque hay 
 
 
 version 2.1: probando ahora el cambio de distribución de los mensajes del mensaje end.
+
+VERSION SUCIO introduccion readme
+resumen practica.
+
+En esta practica, el objetivo final es implementar un sigue lineas que llegue lo mas rápido posible a la meta, compuesta por una caja como obstaculo.
+Durante la realización de la vuelta, la tarjeta esp32 que lleva incorporada debe de ir comunicandose IoT publicando en un topic mediante MQTT a traves de wifi. Este publca la información correspondiente que le llega medianrte la comunicacion serie entre esta placa y la de Arduino Uno. Además, se permitia que el robot perdiese la linea si en su caso, 
+conseguia retomarla otra vez. por ultimo, debia de implemntar un algoritmo que detectara los obstaculos.
+
+Para realizar todos los objetivos descritos, disponemos de los siguieintes componentes incorporados en el propio coche:
+- Arduino Uno: la placa en que llevara todo el algortfimo de los sensores y movimiento, y su parte de comunicación serie con esp32
+- Esp32: placa que realizara meidante wifi la comunicación de la información recibida en la comunicación serie.
+- Ultrasonidos: este sensor nos permite percibir obstaculos a traves de ondas, que rebotan en el obstaculo y vuelven, puediendo calcularse luego esta distancia.
+- sensor infrarojo, detteector de lineas. Permite percibir el color del suelo, distihuiedno entre negor y no negro.
+- motores: estos son lo que giraran las ruedas segun la configuración necesaria y controlará el movimiento del coche.
+- led: led rgb incorporado en el propio arduiino uno, nos sirve para señalizar el estado del coche, rojo si esta fuera de la linea y verde dentro de la liinea
+
+CHATGPT:
+
+En esta práctica, el objetivo principal es desarrollar un robot seguidor de líneas que pueda alcanzar la meta de manera eficiente y rápida. La meta está delimitada por una caja que actúa como obstáculo. Durante el recorrido, el robot debe mantener comunicación en tiempo real a través de una conexión IoT utilizando el protocolo MQTT sobre Wi-Fi. Esta comunicación es gestionada por una placa ESP32 que publica información en un *topic* 
+basado en los datos recibidos mediante la comunicación serie desde una placa Arduino Uno.  El diseño permite cierta flexibilidad: el robot puede perder la línea momentáneamente, siempre y cuando sea capaz de recuperarla y continuar su camino.
+Además, se debe implementar un algoritmo para detectar obstáculos de manera precisa y tomar decisiones que eviten colisiones.
+
+Para cumplir con estos objetivos, el robot incorpora los siguientes componentes:
+
+- **Arduino Uno**: Esta placa centraliza el procesamiento de los datos provenientes de los sensores, controla el movimiento de los motores y establece la comunicación serie con la ESP32.
+- **ESP32**: Responsable de la comunicación IoT mediante Wi-Fi. Esta placa recibe información desde el Arduino Uno y la publica en el servidor MQTT, permitiendo monitorear el comportamiento del robot en tiempo real.
+- **Sensor de ultrasonidos**: Permite la detección de obstáculos a través de ondas sonoras. Estas ondas rebotan en los objetos y, al medir el tiempo que tardan en regresar al sensor, se calcula la distancia al obstáculo.
+- **Sensor infrarrojo (IR)**: Actúa como detector de líneas. Es capaz de diferenciar el color del suelo, distinguiendo entre superficies negras (línea) y no negras (fondo), lo que guía al robot en su trayecto.
+- **Motores**: Controlan las ruedas y permiten que el robot se desplace en función de las órdenes del Arduino Uno, adaptándose a las curvas y obstáculos del trayecto.
+- **LED RGB**: Incorporado en el Arduino Uno, sirve como indicador visual del estado del robot. Se enciende en rojo cuando el robot está fuera de la línea y en verde cuando está correctamente alineado con ella.
+
+Este diseño integra hardware y software de manera eficiente, combinando control de sensores, algoritmos de navegación y comunicación en red. La implementación exitosa de esta práctica no solo requiere lograr que el robot siga
+la línea y evite obstáculos, sino también garantizar una comunicación confiable y un comportamiento robusto en tiempo real.
+
+
+
+
+
+
