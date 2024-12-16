@@ -25,6 +25,55 @@ Este diseño integra hardware y software de manera eficiente, combinando control
 la línea y evite obstáculos, sino también garantizar una comunicación confiable y un comportamiento robusto en tiempo real.
 
 ## 1. Nuestra implementación y detalles
+
+Optamos por usar **FreeRTOS** porque nos parecía la solución más adecuada para gestionar de manera eficiente las prioridades entre las diferentes tareas del robot. Este sistema operativo nos permite dividir la funcionalidad del robot en tareas independientes con niveles de prioridad, garantizando una ejecución fluida y una adecuada respuesta a eventos críticos. En nuestro diseño, hemos distribuido las funcionalidades en cuatro tareas principales, organizadas según su importancia y frecuencia de ejecución:
+
+### **Tareas y sus prioridades**  
+1. **Prioridad 0 (la más baja): Control de LEDs**  
+   Esta tarea gestiona el LED RGB integrado en el Arduino Uno. Su función principal es indicar el estado del robot en tiempo real:  
+   - **Verde:** Cuando el robot detecta correctamente la línea.  
+   - **Rojo:** Cuando el robot pierde la línea.  
+   Dado que no es una funcionalidad crítica para el funcionamiento principal del robot, se le asigna la prioridad más baja.
+
+2. **Prioridad 2: Motores y detección de línea**  
+   En esta tarea, el robot utiliza los sensores infrarrojos para detectar la línea negra del circuito y controla los motores en consecuencia. La lógica aquí permite que el robot tome decisiones rápidas sobre su movimiento, como avanzar, girar o corregir la dirección. Esta funcionalidad es esencial para que el robot siga la línea de forma efectiva, por lo que se le otorga una prioridad media.
+
+3. **Prioridad 3: Envío de mensajes**  
+   Esta tarea es responsable de la comunicación serie entre el Arduino Uno y la ESP32. Cada 4 segundos, el Arduino envía un *ping* a la ESP32, que a su vez publica esta información en un servidor MQTT. Para garantizar la precisión temporal de los mensajes, esta tarea tiene una prioridad más alta que la de los motores.
+
+4. **Prioridad 4 (la más alta): Detección de obstáculos**  
+   Esta es la tarea crítica del sistema, ya que implica la detección de obstáculos mediante el sensor de ultrasonidos. Si el sensor detecta un objeto a una distancia entre 5 y 8 cm, el robot detiene inmediatamente su movimiento para evitar colisiones y marca el fin de la vuelta. Esta tarea tiene la prioridad más alta para asegurar que la detección y respuesta sean inmediatas, minimizando cualquier riesgo de choque.
+
+---
+
+### **Configuración inicial del sistema**  
+Antes de ejecutar el algoritmo, la ESP32 debe conectarse correctamente a una red Wi-Fi. Para ello:  
+1. La ESP32 permanece en espera hasta establecer la conexión.  
+2. Una vez conectada, se cambia el modo de *upload* a *CAM* para garantizar que la comunicación serie entre la ESP32 y el Arduino funcione correctamente.  
+3. Posteriormente, se espera 5 segundos para confirmar la conexión, ya que no hay una forma visual de verificar este paso en tiempo real.  
+
+---
+
+### **Modos de movimiento del robot**  
+El robot cuenta con cinco modos distintos para ajustar su dirección según los datos recibidos de los sensores infrarrojos:  
+1. **Recto:** Todos los sensores detectan la línea.  
+2. **Giro a la izquierda:** Solo los sensores del lado izquierdo detectan la línea.  
+3. **Giro pronunciado a la izquierda:** Los sensores más cercanos al borde izquierdo detectan la línea.  
+4. **Giro a la derecha:** Solo los sensores del lado derecho detectan la línea.  
+5. **Giro pronunciado a la derecha:** Los sensores más cercanos al borde derecho detectan la línea.  
+
+El umbral mínimo para detectar la línea se establece en un valor de **800**. Si el robot pierde la línea, recuerda su estado anterior para corregir la dirección y volver al trayecto. Si el robot pierde la línea mientras avanzaba recto, retrocede ligeramente para intentar recuperarla.
+
+---
+
+### **Comunicación serie y formato de mensajes**  
+En cuanto a la comunicación serie entre el Arduino y la ESP32, los mensajes deben seguir un formato específico para garantizar una lectura correcta. En nuestro diseño, los mensajes se envían encapsulados entre corchetes (`[]`). Este formato asegura que los datos sean interpretados de manera precisa por ambos dispositivos.
+
+---
+
+Con esta estructura de tareas y configuraciones, logramos un sistema eficiente y robusto, donde el robot puede seguir la línea, evitar obstáculos y mantener una comunicación constante mediante IoT, cumpliendo con todos los objetivos de la práctica.
+
+
 ## 2. Proceso
 
 Durante el desarrollo de esta práctica, seguimos una metodología estructurada, avanzando paso a paso para alcanzar los objetivos planteados. Estos fueron los principales pasos que seguimos:
