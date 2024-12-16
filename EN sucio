@@ -16,3 +16,6 @@ Solucionamos los whiles de la ultma vez, delays (comprendidoes y entendidos), ar
 la velocidad, si lo hacia todo perdecto, y si la subiamos muchp, se salia de la linea de frenyte y no paraba.
 
 Version 2: hemos puessto mas mensajes, incluidos algunos opcionales, porque hay 2 de perder linea. No vamos a implemntar el alrgoritmo de q si el coche se va a tomar por culo. Has cambiado los leds.
+
+
+version 2.1: probando ahora el cambio de distribución de los mensajes del mensaje end.
