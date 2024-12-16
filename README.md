@@ -46,6 +46,8 @@ Durante el desarrollo de esta práctica, seguimos una metodología estructurada,
 
 Finalmente, alcanzamos todos los objetivos de la práctica: el robot no solo seguía la línea y detectaba obstáculos, sino que también transmitía información en tiempo real a través de IoT. Este enfoque metódico y flexible fue clave para superar los desafíos y completar el proyecto con éxito.
 
+## 3. Dificultades
+
 ---
 Eleccion de cosas:
 Selecionar FreeRTos para usar las prioridades para el coche
@@ -69,8 +71,11 @@ Version 2: hemos puessto mas mensajes, incluidos algunos opcionales, porque hay 
 
 version 2.1: probando ahora el cambio de distribución de los mensajes del mensaje end.
 
-## 3. Dificultades
+
 ## 4. Video
+
+Click on the link to see it! -> [FOLLOW LINE]() :)
+
 ## Bloopers y fails :)
 
 
