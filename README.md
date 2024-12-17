@@ -1,7 +1,5 @@
 # Práctica 4: Follow line by 13_pitufos
 
-https://silcalvo.github.io/sigue_lineas/
-
 Sistemas Empotrados y de Tiempo real - Diciembre 2024
 
 Silvia calvo e Irene Diez
