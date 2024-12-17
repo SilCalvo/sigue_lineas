@@ -128,6 +128,8 @@ Estos problemas nos permitieron aprender mucho sobre el funcionamiento de las pl
 
 Click on the link to see it! -> [FOLLOW LINE](https://urjc-my.sharepoint.com/:v:/g/personal/i_diezd_2022_alumnos_urjc_es/EYWLZDYfFKZNhpz9uM1EZ4kBxw6YyxjYBe6J39u_NEF-Gg?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D&e=yIZcdA) :)
 
+Al final del video se muestran los mensajes MQTT en el ordenador de clase.
+
 ## Bloopers y fails :)
 
 - [Ups](https://urjc-my.sharepoint.com/:v:/g/personal/i_diezd_2022_alumnos_urjc_es/EZFxFyHMR3dBkb9iQemq6jMBeHXOaho2Qnx-j8v1rwf-nQ?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D&e=eejSSJ)
