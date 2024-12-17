@@ -30,6 +30,7 @@ CRGB leds[NUM_LEDS];
 // PIN_Motor_PWMB: Analog output [0-255]. It provides speed.
 #define PIN_Motor_PWMB 6
 
+// Follow line states
 #define FORWARD 0
 #define RIGHT 1
 #define LEFT 2
@@ -37,17 +38,21 @@ CRGB leds[NUM_LEDS];
 #define LEFT_X2 4
 #define LOST 5
 
-#define FAST 125//175 //125 //75
-#define SLOW 25//35 //25 //15
+#define FAST 125 //175 //125 //75
+#define SLOW 25 //35 //25 //15
 #define VERY_LOW  15 //21//15 //10
 
+#define LINE_UMBRAL 800
 
+// Follow line state
 int current_line = LOST;
 int last_line;
+// State flags
 bool end_flag = false;
 bool line_found = false;
 bool line_lost_flag = false;
 bool flanco_end = false;
+// Percentage line variables
 long int count_loops = 0;
 long int count_line = 0;
 
@@ -57,7 +62,7 @@ uint32_t Color(uint8_t r, uint8_t g, uint8_t b)
   return (((uint32_t)r << 16) | ((uint32_t)g << 8) | b);
 }
 
-// PREGUNTAR PARA QUE ES EL DELAY
+// Control of the RGB led
 static void led (void* pvParameters) {
  int r = 255,g = 255,b =255;
 
@@ -81,6 +86,7 @@ static void led (void* pvParameters) {
   
 }
 
+// Control of the states and actions of the follow line process
 static void dect_line (void* pvParameters) {
 
   while (1) {
@@ -89,30 +95,30 @@ static void dect_line (void* pvParameters) {
     float middle_sensor = analogRead(PIN_ITR20001_MIDDLE);
     float right_sensor = analogRead(PIN_ITR20001_RIGHT);
 
-    
 
-    if (left_sensor < 800 && middle_sensor > 800 && right_sensor > 800) {
+    if (left_sensor < LINE_UMBRAL && middle_sensor > LINE_UMBRAL && right_sensor > LINE_UMBRAL) {
       //Serial.println("{GIRA DERECHA}");
       current_line = RIGHT;
-    } else if (left_sensor > 800 && middle_sensor > 800 && right_sensor < 800) {
+    } else if (left_sensor > LINE_UMBRAL && middle_sensor > LINE_UMBRAL && right_sensor < LINE_UMBRAL) {
       //Serial.println("{GIRAA IZQUIERDA}");
       current_line = LEFT;
-    } else if (left_sensor < 800 && middle_sensor < 800 && right_sensor > 800) {
+    } else if (left_sensor < LINE_UMBRAL && middle_sensor < LINE_UMBRAL && right_sensor > LINE_UMBRAL) {
       //Serial.println("{GIRA MUCHO DERECHA}");
       current_line = RIGHT_X2;
 
-    } else if (left_sensor > 800 && middle_sensor < 800 && right_sensor< 800) {
+    } else if (left_sensor > LINE_UMBRAL && middle_sensor < LINE_UMBRAL && right_sensor< LINE_UMBRAL) {
       //Serial.println("{GIRA MUCHO IZQUIERDA}");
       current_line = LEFT_X2;
 
-    }else if ( middle_sensor > 800 ) {
+    }else if ( middle_sensor > LINE_UMBRAL ) {
       //Serial.println("{RECTO}");
       current_line = FORWARD;
     } else {
       current_line = LOST;
 
     }
-     if (!end_flag) {
+    // Control the motors in based of the state
+    if (!end_flag) {
       count_loops++;
 
       if(current_line != LOST) {
@@ -138,6 +144,7 @@ static void dect_line (void* pvParameters) {
       
       
     } else {
+      // Stop when finnish
       digitalWrite(PIN_Motor_STBY, HIGH);
       digitalWrite(PIN_Motor_AIN_1, HIGH);
       analogWrite(PIN_Motor_PWMA, 0);
@@ -165,18 +172,18 @@ static void messages (void* pvParameters) {
 
 static void dect_obs (void* pvParameters) {
   while (1) {
-    long t; //timepo que demora en llegar el eco
-    long d; //distancia en centimetros
+    long t; //time echo
+    long d; //distance in cm
 
     digitalWrite(TRIG_PIN, HIGH);
     vTaskDelay(pdMS_TO_TICKS(1));
-    //delayMicroseconds(10);          //Enviamos un pulso de 10us
+    
     digitalWrite(TRIG_PIN, LOW);
     
-    t = pulseIn(ECHO_PIN, HIGH); //obtenemos el ancho del pulso
-    d = t/58;             //escalamos el tiempo a una distancia en cm
+    t = pulseIn(ECHO_PIN, HIGH); 
+    d = t/58;           
 
-   if (end_flag && !flanco_end) {
+   if (end_flag && !flanco_end) { // In order to get the correct distance
 
       //Serial.print("Distancia: ");
       Serial.println("{" +String(d)+ "}");
@@ -186,6 +193,7 @@ static void dect_obs (void* pvParameters) {
       flanco_end = true;
     }
 
+    // Stop when obstacle detected
     if(d < 12 && !end_flag){ 
       Serial.println("{end}");
 
@@ -197,6 +205,7 @@ static void dect_obs (void* pvParameters) {
   }
 }
 
+// When line is detected: 
 void control_motors(int control_var) {
   switch (control_var) {
     case FORWARD:
@@ -212,7 +221,7 @@ void control_motors(int control_var) {
     case RIGHT:
       digitalWrite(PIN_Motor_STBY, HIGH);
       digitalWrite(PIN_Motor_AIN_1, HIGH);
-      analogWrite(PIN_Motor_PWMA, 15);
+      analogWrite(PIN_Motor_PWMA, VERY_LOW);
       digitalWrite(PIN_Motor_BIN_1, HIGH);
       analogWrite(PIN_Motor_PWMB, FAST);
 
@@ -224,7 +233,7 @@ void control_motors(int control_var) {
       digitalWrite(PIN_Motor_AIN_1, HIGH);
       analogWrite(PIN_Motor_PWMA, FAST);
       digitalWrite(PIN_Motor_BIN_1, HIGH);
-      analogWrite(PIN_Motor_PWMB, 15);
+      analogWrite(PIN_Motor_PWMB, VERY_LOW);
 
       last_line = control_var;
       break;
@@ -250,9 +259,11 @@ void control_motors(int control_var) {
       break;
   }
 }
+
+//In case line lost
 void control_lost_line(){
  switch (last_line) {
-    case FORWARD:
+    case FORWARD: // Go backwards
       digitalWrite(PIN_Motor_STBY, HIGH);
       digitalWrite(PIN_Motor_AIN_1, LOW);
       analogWrite(PIN_Motor_PWMA, 50);
@@ -264,7 +275,7 @@ void control_lost_line(){
     case RIGHT:
       digitalWrite(PIN_Motor_STBY, HIGH);
       digitalWrite(PIN_Motor_AIN_1, HIGH);
-      analogWrite(PIN_Motor_PWMA, 15);
+      analogWrite(PIN_Motor_PWMA, VERY_LOW);
       digitalWrite(PIN_Motor_BIN_1, HIGH);
       analogWrite(PIN_Motor_PWMB, FAST);
 
@@ -275,7 +286,7 @@ void control_lost_line(){
       digitalWrite(PIN_Motor_AIN_1, HIGH);
       analogWrite(PIN_Motor_PWMA, FAST);
       digitalWrite(PIN_Motor_BIN_1, HIGH);
-      analogWrite(PIN_Motor_PWMB, 15);
+      analogWrite(PIN_Motor_PWMB, VERY_LOW);
 
       break;
 
@@ -306,21 +317,18 @@ void setup() {
   FastLED.addLeds<NEOPIXEL, PIN_RBGLED>(leds, NUM_LEDS);
   FastLED.setBrightness(20);
 
-  //EDCTLINES
+  //DECTLINES
   pinMode(PIN_ITR20001_LEFT, INPUT);
   pinMode(PIN_ITR20001_MIDDLE, INPUT);
   pinMode(PIN_ITR20001_RIGHT, INPUT);
 
-  //OBSTACLEH
+  //OBSTACLES
   pinMode(TRIG_PIN, OUTPUT); //pin como salida
   pinMode(ECHO_PIN, INPUT);  //pin como entrada
   digitalWrite(TRIG_PIN, LOW);//Inicializamos el pin con 0
 
-
-  // inicializar comunicaciones
+  // Wait for ESP32 connected to wifi
   String sendBuff;
-
-  // To make this code works, remember that the switch S1 should be set to "CAM"
   while(1) {
 
     if (Serial.available()) {
@@ -340,14 +348,14 @@ void setup() {
 
   }
  
-  // put your setup code here, to run once:
-  xTaskCreate(led, "Led", 50, NULL, 0, NULL); //////////////////////////////////NULL O VAR
+  /// FREETROS Tasks 
+  xTaskCreate(led, "Led", 50, NULL, 0, NULL); 
   xTaskCreate(dect_line, "Dect_Line", 100, NULL, 2, NULL);
   xTaskCreate(messages, "Messages", 100, NULL, 3, NULL);
   xTaskCreate(dect_obs, "Dect_Obs", 100, NULL, 4, NULL);
 
 
-  //MOTOREH 
+  //MOTORS
   pinMode(PIN_Motor_STBY, OUTPUT);
   pinMode(PIN_Motor_AIN_1, OUTPUT);
   pinMode(PIN_Motor_PWMA, OUTPUT);
@@ -360,6 +368,7 @@ void setup() {
   digitalWrite(PIN_Motor_BIN_1, HIGH);
   analogWrite(PIN_Motor_PWMB, 0);
 
+  // Start circuit
   Serial.println("{init}");
 
 

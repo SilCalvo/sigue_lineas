@@ -44,11 +44,10 @@ void setup() {
   Serial.begin(9600);
   delay(10);
   Serial.println(ssid);
-  //WiFi.disconnect(true); 
   WiFi.mode(WIFI_STA);
 
   WiFi.begin(ssid, WPA2_AUTH_PEAP, EAP_IDENTITY, EAP_USERNAME, EAP_PASSWORD); 
-
+  // Connect to wifi
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -64,18 +63,14 @@ void setup() {
   // Serial port to communicate with Arduino UNO
   Serial2.begin(9600, SERIAL_8N1, RXD2, TXD2);
   
-  delay(5000);
-  
-  /*while(!Serial2.available()){
-    Serial.print("espersndo serial");
-
-  }*/
+  delay(5000); // In order to connect to the wifi and change to com in the car 
+  // Send to arduino that thw wifi has been connected
   Serial2.println("{ Connected to wifi }");
   Serial.print("Messase sent! to Arduino");
 }
 
 void reconnect() {
-  // Reintentar conexión MQTT hasta que se logre
+  // Retry MQTT conection till success
   while (!client.connected()) {
     Serial.print("Intentando conectar al broker MQTT...");
     if (client.connect("ESP32Client")) {
@@ -89,7 +84,7 @@ void reconnect() {
   }
 }
 
-
+// Clean the buff varible in order to get the data inside of it
 String data_clean(String buff){
   buff.remove(0, 1); // Elimina el primer carácter '{'
   buff.remove(buff.length() - 1, 1);
@@ -114,21 +109,9 @@ void loop() {
         reconnect();
       }
       client.loop();
-      sendBuff.trim(); // Elimina espacios en blanco, saltos de línea y caracteres no imprimibles
+      sendBuff.trim(); // Remove blank spaces
 
-      /*if (end_flag){
-
-        String distance = data_clean(sendBuff);
-        Serial.println("Publicando mensaje...");
-        String payload2 = "{\"team_name\": \"13_pitufos\", \"id\": \"13\", \"action\": \"OBSTACLE_DETECTED\", \"distance\": " + distance + "}";
-        client.publish(mqtt_topic, payload2.c_str());
-
-        Serial.println("Publicando mensaje...");
-        String payload = "{\"team_name\": \"13_pitufos\", \"id\": \"13\", \"action\": \"END_LAP\, \"time\": " + String(time_lap) + "}";
-        client.publish(mqtt_topic, payload.c_str());
-        end_flag = false;
-
-      } else*/ 
+      // Depending on the message recived by the arduino, send the corresponding MQTT
       if (sendBuff == "{init}"){
         Serial.println("Publicando mensaje...");
         String payload = "{\"team_name\":\"13_pitufos\",\"id\":\"13\",\"action\":\"START_LAP\"}";
@@ -137,22 +120,23 @@ void loop() {
 
 
       } else if (sendBuff.equals("{ping}")){
-        // Publicar un mensaje
+        
         time_ping = millis() - time_start;
         Serial.println("Publicando mensaje...");
         String payload = "{\"team_name\":\"13_pitufos\",\"id\":\"13\",\"action\":\"PING\",\"time\":" + String(time_ping) + "}";
         client.publish(mqtt_topic, payload.c_str());
 
       } else if (sendBuff == "{end}" || end_flag ) {
+        // When finished, it is necesary to read 2 times from the serial port
         time_lap = millis() - time_start;
         end_flag = true;
         
         if (state == 0) {
-          state = 1;
+          state = 1; // sendbuff = end
 
         } else if (state == 1){
 
-          String distance = data_clean(sendBuff);
+          String distance = data_clean(sendBuff); // sendbuff = distance
           Serial.println("Publicando mensaje...");
           String payload = "{\"team_name\":\"13_pitufos\",\"id\":\"13\",\"action\":\"OBSTACLE_DETECTED\",\"distance\":" + distance + "}";
           client.publish(mqtt_topic, payload.c_str());
@@ -163,7 +147,7 @@ void loop() {
           state = 2;
 
         } else if (state == 2) {
-          Serial.println("Publicando mensaje...");
+          Serial.println("Publicando mensaje..."); // sendbuff = percentage followed line
           String number = data_clean(sendBuff);
           String payload = "{\"team_name\":\"13_pitufos\",\"id\":\"13\",\"action\":\"VISIBLE_LINE\",\"value\":" +  number +"}";
           client.publish(mqtt_topic, payload.c_str());
@@ -181,16 +165,8 @@ void loop() {
         Serial.println("Publicando mensaje...");
         String payload = "{\"team_name\":\"13_pitufos\",\"id\":\"13\",\"action\":\"LINE_FOUND\"}";
         client.publish(mqtt_topic, payload.c_str());
-
       
-      } /*else {
-        Serial.println("Publicando mensaje...");
-        String number = data_clean(sendBuff);
-        String payload = "{\"team_name\": \"13_pitufos\", \"id\": \"13\", \"action\": \"VISIBLE_LINE\, \"value\": " +  number + "%}";
-        client.publish(mqtt_topic, payload.c_str());", \"id\": \"13\",
-
-      }*/
-
+      }
       sendBuff = "";
 
     }
