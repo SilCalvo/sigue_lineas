@@ -33,6 +33,7 @@ unsigned long time_lap;
 unsigned long time_ping;
 bool end_flag = false;
 int state = 0;
+int group = 13;
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -130,7 +131,7 @@ void loop() {
       } else*/ 
       if (sendBuff == "{init}"){
         Serial.println("Publicando mensaje...");
-        String payload = "{\"team_name\": \"13_pitufos\", \"id\": \"13\", \"action\": \"START_LAP\"}";
+        String payload = "{\"team_name\":\"13_pitufos\",\"id\":\"13\",\"action\":\"START_LAP\"}";
         client.publish(mqtt_topic, payload.c_str());
         time_start = millis();
 
@@ -139,7 +140,7 @@ void loop() {
         // Publicar un mensaje
         time_ping = millis() - time_start;
         Serial.println("Publicando mensaje...");
-        String payload = "{\"team_name\": \"13_pitufos\", \"id\": \"13\", \"action\": \"PING\, \"time\": " + String(time_ping) + "}";
+        String payload = "{\"team_name\":\"13_pitufos\",\"id\":\"13\",\"action\":\"PING\",\"time\":" + String(time_ping) + "}";
         client.publish(mqtt_topic, payload.c_str());
 
       } else if (sendBuff == "{end}" || end_flag ) {
@@ -153,18 +154,18 @@ void loop() {
 
           String distance = data_clean(sendBuff);
           Serial.println("Publicando mensaje...");
-          String payload = "{\"team_name\": \"13_pitufos\", \"id\": \"13\", \"action\": \"OBSTACLE_DETECTED\", \"distance\": " + distance + "}";
+          String payload = "{\"team_name\":\"13_pitufos\",\"id\":\"13\",\"action\":\"OBSTACLE_DETECTED\",\"distance\":" + distance + "}";
           client.publish(mqtt_topic, payload.c_str());
 
           Serial.println("Publicando mensaje...");
-          String payload2 = "{\"team_name\": \"13_pitufos\", \"id\": \"13\", \"action\": \"END_LAP\, \"time\": " + String(time_lap) + "}";
+          String payload2 = "{\"team_name\":\"13_pitufos\",\"id\":\"13\",\"action\":\"END_LAP\",\"time\":" + String(time_lap) + "}";
           client.publish(mqtt_topic, payload2.c_str());
           state = 2;
 
         } else if (state == 2) {
           Serial.println("Publicando mensaje...");
           String number = data_clean(sendBuff);
-          String payload = "{\"team_name\": \"13_pitufos\", \"id\": \"13\", \"action\": \"VISIBLE_LINE\, \"value\": " +  number + "%}";
+          String payload = "{\"team_name\":\"13_pitufos\",\"id\":\"13\",\"action\":\"VISIBLE_LINE\",\"value\":" +  number +"}";
           client.publish(mqtt_topic, payload.c_str());
 
         }
@@ -172,13 +173,13 @@ void loop() {
       } else if (sendBuff == "{line_lost}"){
 
         Serial.println("Publicando mensaje...");
-        String payload = "{\"team_name\": \"13_pitufos\", \"id\": \"13\", \"action\": \"LINE_LOST\"}";
+        String payload = "{\"team_name\":\"13_pitufos\",\"id\":\"13\",\"action\":\"LINE_LOST\"}";
         client.publish(mqtt_topic, payload.c_str());
 
       } else if (sendBuff == "{line_found}"){
         
         Serial.println("Publicando mensaje...");
-        String payload = "{\"team_name\": \"13_pitufos\", \"id\": \"13\", \"action\": \"LINE_FOUND\"}";
+        String payload = "{\"team_name\":\"13_pitufos\",\"id\":\"13\",\"action\":\"LINE_FOUND\"}";
         client.publish(mqtt_topic, payload.c_str());
 
       
@@ -186,7 +187,7 @@ void loop() {
         Serial.println("Publicando mensaje...");
         String number = data_clean(sendBuff);
         String payload = "{\"team_name\": \"13_pitufos\", \"id\": \"13\", \"action\": \"VISIBLE_LINE\, \"value\": " +  number + "%}";
-        client.publish(mqtt_topic, payload.c_str());
+        client.publish(mqtt_topic, payload.c_str());", \"id\": \"13\",
 
       }*/
 

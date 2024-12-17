@@ -51,8 +51,6 @@ bool flanco_end = false;
 long int count_loops = 0;
 long int count_line = 0;
 
-//TaskHandle_t messagesHandle = NULL; // Declarar handle global para la tarea messages
-
 
 uint32_t Color(uint8_t r, uint8_t g, uint8_t b)
 {
@@ -188,7 +186,7 @@ static void dect_obs (void* pvParameters) {
       flanco_end = true;
     }
 
-    if(d < 11 && !end_flag){ ///////////////////////////////////////////////////////////////////// DEPURAR AL MILIMETRO
+    if(d < 12 && !end_flag){ 
       Serial.println("{end}");
 
       end_flag = true;
